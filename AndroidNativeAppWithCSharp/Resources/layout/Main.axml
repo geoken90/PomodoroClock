@@ -51,7 +51,7 @@
             android:minWidth="25px"
             android:minHeight="25px">
             <TextView
-                android:id="@+id/3minLbl"
+                android:id="@+id/threeMinLbl"
                 android:layout_width="wrap_content"
                 android:layout_height="30dp"
                 android:paddingTop="2.5dp"
@@ -59,7 +59,7 @@
                 android:textSize="32dp"
                 android:gravity="top" />
             <TextView
-                android:id="@+id/5minLbl"
+                android:id="@+id/fiveMinLbl"
                 android:layout_width="wrap_content"
                 android:layout_height="30dp"
                 android:paddingTop="2.5dp"
@@ -75,6 +75,7 @@
             android:paddingTop="2.5dp"
             android:text="25"
             android:textSize="80dp"
+            android:textColor="#FF8C00"
             android:gravity="center" />
         <LinearLayout
             android:id="@+id/breakTimeChoicesRightWrapper"
@@ -86,7 +87,7 @@
             android:minWidth="25px"
             android:minHeight="25px">
             <TextView
-                android:id="@+id/15minLbl"
+                android:id="@+id/fifteenMinLbl"
                 android:layout_width="wrap_content"
                 android:layout_height="30dp"
                 android:layout_gravity="right"
@@ -96,7 +97,7 @@
                 android:textSize="32dp"
                 android:gravity="top" />
             <TextView
-                android:id="@+id/20minLbl"
+                android:id="@+id/thirtyMinLbl"
                 android:layout_width="wrap_content"
                 android:layout_height="30dp"
                 android:layout_gravity="right"

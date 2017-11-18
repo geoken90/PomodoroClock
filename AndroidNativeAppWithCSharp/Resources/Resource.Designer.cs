@@ -60,18 +60,6 @@ namespace AndroidNativeAppWithCSharp
 		public partial class Id
 		{
 			
-			// aapt resource value: 0x7f050009
-			public const int 15minLbl = 2131034121;
-			
-			// aapt resource value: 0x7f05000a
-			public const int 20minLbl = 2131034122;
-			
-			// aapt resource value: 0x7f050005
-			public const int 3minLbl = 2131034117;
-			
-			// aapt resource value: 0x7f050006
-			public const int 5minLbl = 2131034118;
-			
 			// aapt resource value: 0x7f050004
 			public const int breakTimeChoicesLeftWrapper = 2131034116;
 			
@@ -93,6 +81,12 @@ namespace AndroidNativeAppWithCSharp
 			// aapt resource value: 0x7f050000
 			public const int currentTimeWrapper = 2131034112;
 			
+			// aapt resource value: 0x7f050009
+			public const int fifteenMinLbl = 2131034121;
+			
+			// aapt resource value: 0x7f050006
+			public const int fiveMinLbl = 2131034118;
+			
 			// aapt resource value: 0x7f05000c
 			public const int message = 2131034124;
 			
@@ -113,6 +107,12 @@ namespace AndroidNativeAppWithCSharp
 			
 			// aapt resource value: 0x7f05000f
 			public const int stopBtn = 2131034127;
+			
+			// aapt resource value: 0x7f05000a
+			public const int thirtyMinLbl = 2131034122;
+			
+			// aapt resource value: 0x7f050005
+			public const int threeMinLbl = 2131034117;
 			
 			static Id()
 			{
