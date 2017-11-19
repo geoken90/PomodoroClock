@@ -14,6 +14,7 @@ namespace AndroidNativeAppWithCSharp
         Button stopBtn;
         TextView pomodoroCntr;
         TextView message;
+        TextView progressMessage;
         TextView three;
         TextView five;
         TextView fifteen;
@@ -33,7 +34,11 @@ namespace AndroidNativeAppWithCSharp
 
         private const string PRODUCTION_COUNTDOWN_MSG = "Counting down production time";
         private const string SMALLBREAK_COUNTDOWN_MSG = "Counting down small break time";
-        private const string BEFORE_SMALLBREAK_COUNTDOWN_MSG = "Press start to begin break countdown";
+        private const string LARGEBREAK_COUNTDOWN_MSG = "Counting down large break time";
+        private const string BEFORE_SMALLBREAK_COUNTDOWN_MSG = "Press start to begin small break countdown";
+        private const string BEFORE_LARGEBREAK_COUNTDOWN_MSG = "Press start to begin large break countdown";
+        private const string PROGRESS_DEFAULT_MSG = "No productive periods passed yet";
+        private const string PROGRESS_ALL_MSG = "Finally it is time for the large break!";
 
         protected override void OnCreate(Bundle bundle)
         {
@@ -45,6 +50,10 @@ namespace AndroidNativeAppWithCSharp
             // Initialize components for later use
             message = FindViewById<TextView> (Resource.Id.message);
             message.Text = "Press start to begin countdown";
+
+            progressMessage = FindViewById<TextView>(Resource.Id.progressMessage);
+            progressMessage.Text = PROGRESS_DEFAULT_MSG;
+            progressMessage.SetTextColor(Android.Graphics.Color.LightGreen);
 
             startBtn = FindViewById<Button> (Resource.Id.startBtn);
             this.FindViewById<Button>(Resource.Id.startBtn).Click += this.CountdownTime;
@@ -104,6 +113,13 @@ namespace AndroidNativeAppWithCSharp
                     message.Text = SMALLBREAK_COUNTDOWN_MSG;
                 });
             }
+            else
+            {
+                RunOnUiThread(() =>
+                {
+                    message.Text = LARGEBREAK_COUNTDOWN_MSG;
+                });
+            }
         }
 
         /// <summary>
@@ -128,7 +144,10 @@ namespace AndroidNativeAppWithCSharp
                     stopped.Checked = true;
                     running.Checked = false;
                     progressBar.Progress += 1;
-                    message.Text = BEFORE_SMALLBREAK_COUNTDOWN_MSG;
+                    message.Text = (progressBar.Progress < 4) ? BEFORE_SMALLBREAK_COUNTDOWN_MSG : BEFORE_LARGEBREAK_COUNTDOWN_MSG;
+                    progressMessage.Text = (progressBar.Progress < 4)
+                    ? $"{progressBar.Progress} periods have passed - {4 - progressBar.Progress} remain" : PROGRESS_ALL_MSG;
+                    countdownForWhat = (progressBar.Progress < 4) ? "smallBreak" : "largeBreak";
                 });
                 timer.Stop();
                 
