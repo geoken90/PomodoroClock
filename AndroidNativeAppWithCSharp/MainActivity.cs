@@ -29,6 +29,7 @@ namespace AndroidNativeAppWithCSharp
 
         short smallBreak = 3;
         short largeBreak = 15;
+        string countdownForWhat = "production";
 
         protected override void OnCreate(Bundle bundle)
         {
@@ -114,8 +115,19 @@ namespace AndroidNativeAppWithCSharp
             }
         }// end of timedEvent()
 
+
+        /// <summary>
+        /// Sets the break time periods for small and large breaks to (3-5) and (15-30) minutes
+        /// and updates the ui approprietly
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void UpdateBreakTimePeriods(object sender, EventArgs e)
         {
+            if (countdownForWhat.Equals("break"))
+                return;
+
+
             if (sender.Equals(three))
             {
                 RunOnUiThread(() =>
@@ -124,6 +136,7 @@ namespace AndroidNativeAppWithCSharp
                     five.SetTextColor(Android.Graphics.Color.Gray);
                 });
                 smallBreak = 3;
+                Toast.MakeText(this, $"Small Break Time is set for {smallBreak} minutes" , ToastLength.Long).Show();
             }
             else if (sender.Equals(five))
             {
@@ -133,6 +146,7 @@ namespace AndroidNativeAppWithCSharp
                     three.SetTextColor(Android.Graphics.Color.Gray);
                 });
                 smallBreak = 5;
+                Toast.MakeText(this, $"Small Break Time is set for {smallBreak} minutes", ToastLength.Long).Show();
             }
             else if (sender.Equals(fifteen))
             {
@@ -142,6 +156,7 @@ namespace AndroidNativeAppWithCSharp
                     thirty.SetTextColor(Android.Graphics.Color.Gray);
                 });
                 largeBreak = 15;
+                Toast.MakeText(this, $"Large Break Time is set for {largeBreak} minutes", ToastLength.Long).Show();
             }
             else if (sender.Equals(thirty))
             {
@@ -151,6 +166,7 @@ namespace AndroidNativeAppWithCSharp
                     fifteen.SetTextColor(Android.Graphics.Color.Gray);
                 });
                 largeBreak = 30;
+                Toast.MakeText(this, $"Small Break Time is set for {largeBreak} minutes", ToastLength.Long).Show();
             }
 
         }// end of updateBreakTimePeriods
