@@ -102,6 +102,9 @@ namespace AndroidNativeAppWithCSharp
 			// aapt resource value: 0x7f050010
 			public const int progressBarWrapper = 2131034128;
 			
+			// aapt resource value: 0x7f050012
+			public const int progressMessage = 2131034130;
+			
 			// aapt resource value: 0x7f05000e
 			public const int startBtn = 2131034126;
 			

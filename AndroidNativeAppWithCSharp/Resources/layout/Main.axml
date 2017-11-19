@@ -120,7 +120,6 @@
             android:id="@+id/message"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingLeft="20dp"
             android:text="the message to be displayed"
             android:textSize="22dp"
             android:gravity="center" />
@@ -171,4 +170,12 @@
             android:max="4"
             android:progress="1" />
     </LinearLayout>
+    <TextView
+        android:id="@+id/progressMessage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="25dp"
+        android:text="the progress message"
+        android:textSize="18dp"
+        android:gravity="center" />
 </LinearLayout>
