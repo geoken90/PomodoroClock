@@ -31,6 +31,10 @@ namespace AndroidNativeAppWithCSharp
         short largeBreak = 15;
         string countdownForWhat = "production";
 
+        private const string PRODUCTION_COUNTDOWN_MSG = "Counting down production time";
+        private const string SMALLBREAK_COUNTDOWN_MSG = "Counting down small break time";
+        private const string BEFORE_SMALLBREAK_COUNTDOWN_MSG = "Press start to begin break countdown";
+
         protected override void OnCreate(Bundle bundle)
         {
             base.OnCreate(bundle);
@@ -77,14 +81,29 @@ namespace AndroidNativeAppWithCSharp
 
         private void CountdownTime(object sender, EventArgs e)
         {
-            timer = new System.Timers.Timer();
-            timer.Interval = cntrTick;
-            timer.Elapsed += onTimedEvent;
-            countMinutes = cntrVal / 10000;
-            timer.Enabled = true;
-            Toast.MakeText(this, "timer started", ToastLength.Short).Show();
-            running.Checked = true;
-            stopped.Checked = false;
+            if (countdownForWhat.Equals("production"))
+            {
+                RunOnUiThread(() =>
+                {
+                    message.Text = PRODUCTION_COUNTDOWN_MSG;
+                });
+
+                timer = new System.Timers.Timer();
+                timer.Interval = cntrTick;
+                timer.Elapsed += onTimedEvent;
+                countMinutes = cntrVal / 10000;
+                timer.Enabled = true;
+                Toast.MakeText(this, "timer started", ToastLength.Short).Show();
+                running.Checked = true;
+                stopped.Checked = false;
+            }
+            else if(countdownForWhat.Equals("smallBreak"))
+            {
+                RunOnUiThread(() =>
+                {
+                    message.Text = SMALLBREAK_COUNTDOWN_MSG;
+                });
+            }
         }
 
         /// <summary>
@@ -109,6 +128,7 @@ namespace AndroidNativeAppWithCSharp
                     stopped.Checked = true;
                     running.Checked = false;
                     progressBar.Progress += 1;
+                    message.Text = BEFORE_SMALLBREAK_COUNTDOWN_MSG;
                 });
                 timer.Stop();
                 

@@ -148,6 +148,7 @@
             android:layout_height="wrap_content"
             android:text="the message to be displayed"
             android:textSize="22dp"
+            android:textColor="#FF8C00"
             android:gravity="center" />
     </LinearLayout>
     <LinearLayout
