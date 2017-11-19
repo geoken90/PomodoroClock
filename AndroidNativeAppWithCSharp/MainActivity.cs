@@ -15,10 +15,11 @@ namespace AndroidNativeAppWithCSharp
         TextView pomodoroCntr;
         TextView message;
         CheckBox stopped, running;
+        ProgressBar progressBar;
 
 
         System.Timers.Timer timer;
-        int cntrVal = 250000;
+        int cntrVal = 10000;
         const int cntrTick = 60000;
         int countMinutes;
 
@@ -38,8 +39,12 @@ namespace AndroidNativeAppWithCSharp
             pomodoroCntr = FindViewById<TextView> (Resource.Id.pomodoroLbl);
             stopped = FindViewById<CheckBox> (Resource.Id.offCheckbox);
             stopped.Checked = true;
+            stopped.Enabled = false;
             running = FindViewById<CheckBox> (Resource.Id.runningCheckbox);
             running.Checked = false;
+            running.Enabled = false;
+            progressBar = FindViewById<ProgressBar> (Resource.Id.progressBar);
+            progressBar.Progress = 0;
         }
 
         private void CountdownTime(object sender, EventArgs e)
@@ -63,11 +68,22 @@ namespace AndroidNativeAppWithCSharp
         private void onTimedEvent(object sender, System.Timers.ElapsedEventArgs e)
         {
             countMinutes--;
-            pomodoroCntr.Text = countMinutes.ToString();
+
+            RunOnUiThread(() =>
+            {
+                pomodoroCntr.Text = countMinutes.ToString();
+            });
 
             if (countMinutes == 0)
             {
+                RunOnUiThread(() =>
+                {
+                    stopped.Checked = true;
+                    running.Checked = false;
+                    progressBar.Progress += 1;
+                });
                 timer.Stop();
+                
             }
         }
     }
