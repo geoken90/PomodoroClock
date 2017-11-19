@@ -14,6 +14,10 @@ namespace AndroidNativeAppWithCSharp
         Button stopBtn;
         TextView pomodoroCntr;
         TextView message;
+        TextView three;
+        TextView five;
+        TextView fifteen;
+        TextView thirty;
         CheckBox stopped, running;
         ProgressBar progressBar;
 
@@ -22,6 +26,9 @@ namespace AndroidNativeAppWithCSharp
         int cntrVal = 10000;
         const int cntrTick = 60000;
         int countMinutes;
+
+        short smallBreak = 3;
+        short largeBreak = 15;
 
         protected override void OnCreate(Bundle bundle)
         {
@@ -33,18 +40,38 @@ namespace AndroidNativeAppWithCSharp
             // Initialize components for later use
             message = FindViewById<TextView> (Resource.Id.message);
             message.Text = "Press start to begin countdown";
+
             startBtn = FindViewById<Button> (Resource.Id.startBtn);
             this.FindViewById<Button>(Resource.Id.startBtn).Click += this.CountdownTime;
+
             stopBtn = FindViewById<Button> (Resource.Id.stopBtn);
+
             pomodoroCntr = FindViewById<TextView> (Resource.Id.pomodoroLbl);
+
             stopped = FindViewById<CheckBox> (Resource.Id.offCheckbox);
             stopped.Checked = true;
             stopped.Enabled = false;
+
             running = FindViewById<CheckBox> (Resource.Id.runningCheckbox);
             running.Checked = false;
             running.Enabled = false;
+
             progressBar = FindViewById<ProgressBar> (Resource.Id.progressBar);
             progressBar.Progress = 0;
+
+            three = FindViewById<TextView>(Resource.Id.threeMinLbl);
+            this.FindViewById<TextView>(Resource.Id.threeMinLbl).Click += this.UpdateBreakTimePeriods;
+            three.SetTextColor(Android.Graphics.Color.DarkOrange);
+
+            five = FindViewById<TextView>(Resource.Id.fiveMinLbl);
+            this.FindViewById<TextView>(Resource.Id.fiveMinLbl).Click += this.UpdateBreakTimePeriods;
+
+            fifteen = FindViewById<TextView>(Resource.Id.fifteenMinLbl);
+            this.FindViewById<TextView>(Resource.Id.fifteenMinLbl).Click += this.UpdateBreakTimePeriods;
+            fifteen.SetTextColor(Android.Graphics.Color.DarkOrange);
+
+            thirty = FindViewById<TextView>(Resource.Id.thirtyMinLbl);
+            this.FindViewById<TextView>(Resource.Id.thirtyMinLbl).Click += this.UpdateBreakTimePeriods;
         }
 
         private void CountdownTime(object sender, EventArgs e)
@@ -85,7 +112,48 @@ namespace AndroidNativeAppWithCSharp
                 timer.Stop();
                 
             }
-        }
+        }// end of timedEvent()
+
+        private void UpdateBreakTimePeriods(object sender, EventArgs e)
+        {
+            if (sender.Equals(three))
+            {
+                RunOnUiThread(() =>
+                {
+                    three.SetTextColor(Android.Graphics.Color.DarkOrange);
+                    five.SetTextColor(Android.Graphics.Color.Gray);
+                });
+                smallBreak = 3;
+            }
+            else if (sender.Equals(five))
+            {
+                RunOnUiThread(() =>
+                {
+                    five.SetTextColor(Android.Graphics.Color.DarkOrange);
+                    three.SetTextColor(Android.Graphics.Color.Gray);
+                });
+                smallBreak = 5;
+            }
+            else if (sender.Equals(fifteen))
+            {
+                RunOnUiThread(() =>
+                {
+                    fifteen.SetTextColor(Android.Graphics.Color.DarkOrange);
+                    thirty.SetTextColor(Android.Graphics.Color.Gray);
+                });
+                largeBreak = 15;
+            }
+            else if (sender.Equals(thirty))
+            {
+                RunOnUiThread(() =>
+                {
+                    thirty.SetTextColor(Android.Graphics.Color.DarkOrange);
+                    fifteen.SetTextColor(Android.Graphics.Color.Gray);
+                });
+                largeBreak = 30;
+            }
+
+        }// end of updateBreakTimePeriods
     }
 }
 
