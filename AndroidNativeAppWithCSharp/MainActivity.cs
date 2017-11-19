@@ -13,6 +13,9 @@ namespace AndroidNativeAppWithCSharp
         Button startBtn;
         Button stopBtn;
         TextView pomodoroCntr;
+        TextView message;
+        CheckBox stopped, running;
+
 
         System.Timers.Timer timer;
         int cntrVal = 250000;
@@ -27,10 +30,16 @@ namespace AndroidNativeAppWithCSharp
             SetContentView (Resource.Layout.Main);
 
             // Initialize components for later use
+            message = FindViewById<TextView> (Resource.Id.message);
+            message.Text = "Press start to begin countdown";
             startBtn = FindViewById<Button> (Resource.Id.startBtn);
             this.FindViewById<Button>(Resource.Id.startBtn).Click += this.CountdownTime;
             stopBtn = FindViewById<Button> (Resource.Id.stopBtn);
             pomodoroCntr = FindViewById<TextView> (Resource.Id.pomodoroLbl);
+            stopped = FindViewById<CheckBox> (Resource.Id.offCheckbox);
+            stopped.Checked = true;
+            running = FindViewById<CheckBox> (Resource.Id.runningCheckbox);
+            running.Checked = false;
         }
 
         private void CountdownTime(object sender, EventArgs e)
@@ -41,6 +50,8 @@ namespace AndroidNativeAppWithCSharp
             countMinutes = cntrVal / 10000;
             timer.Enabled = true;
             Toast.MakeText(this, "timer started", ToastLength.Short).Show();
+            running.Checked = true;
+            stopped.Checked = false;
         }
 
         /// <summary>
