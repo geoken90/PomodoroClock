@@ -24,14 +24,24 @@ namespace AndroidNativeAppWithCSharp
 
 
         System.Timers.Timer timer;
-        int cntrVal = 10000;
+        int cntrVal = 250000;
         const int cntrTick = 60000;
         int countMinutes;
+        int tempTime = -1;
 
         short smallBreak = 3;
         short largeBreak = 15;
         string countdownForWhat = "production";
 
+        private enum btnText
+        {
+            START = 1,
+            STOP = 2,
+            CONTINUE = 3,
+            RESET = 4
+        };
+
+        private const string INITIAL_MSG = "Press start to begin countdown";
         private const string PRODUCTION_COUNTDOWN_MSG = "Counting down production time";
         private const string SMALLBREAK_COUNTDOWN_MSG = "Counting down small break time";
         private const string LARGEBREAK_COUNTDOWN_MSG = "Counting down large break time";
@@ -49,7 +59,7 @@ namespace AndroidNativeAppWithCSharp
 
             // Initialize components for later use
             message = FindViewById<TextView> (Resource.Id.message);
-            message.Text = "Press start to begin countdown";
+            message.Text = INITIAL_MSG;
 
             progressMessage = FindViewById<TextView>(Resource.Id.progressMessage);
             progressMessage.Text = PROGRESS_DEFAULT_MSG;
@@ -59,6 +69,7 @@ namespace AndroidNativeAppWithCSharp
             this.FindViewById<Button>(Resource.Id.startBtn).Click += this.CountdownTime;
 
             stopBtn = FindViewById<Button> (Resource.Id.stopBtn);
+            this.FindViewById<Button>(Resource.Id.stopBtn).Click += this.StopCountdown;
 
             pomodoroCntr = FindViewById<TextView> (Resource.Id.pomodoroLbl);
 
@@ -90,6 +101,16 @@ namespace AndroidNativeAppWithCSharp
 
         private void CountdownTime(object sender, EventArgs e)
         {
+            RunOnUiThread(() =>
+            {
+                stopBtn.Text = btnText.STOP.ToString();
+            });
+
+            tempTime = -1;
+            timer = new System.Timers.Timer();
+            timer.Interval = cntrTick;
+            timer.Elapsed += onTimedEvent;
+
             if (countdownForWhat.Equals("production"))
             {
                 RunOnUiThread(() =>
@@ -97,12 +118,13 @@ namespace AndroidNativeAppWithCSharp
                     message.Text = PRODUCTION_COUNTDOWN_MSG;
                 });
 
-                timer = new System.Timers.Timer();
-                timer.Interval = cntrTick;
-                timer.Elapsed += onTimedEvent;
-                countMinutes = cntrVal / 10000;
+                if (tempTime == -1)
+                {
+                    countMinutes = cntrVal / 10000;
+                }
+                
                 timer.Enabled = true;
-                Toast.MakeText(this, "timer started", ToastLength.Short).Show();
+                Toast.MakeText(this, "timer for production started", ToastLength.Short).Show();
                 running.Checked = true;
                 stopped.Checked = false;
             }
@@ -112,6 +134,16 @@ namespace AndroidNativeAppWithCSharp
                 {
                     message.Text = SMALLBREAK_COUNTDOWN_MSG;
                 });
+
+                if (tempTime == -1)
+                {
+                    countMinutes = (smallBreak * 10000) / 10000;
+                }
+
+                timer.Enabled = true;
+                Toast.MakeText(this, "timer for small break started", ToastLength.Short).Show();
+                running.Checked = true;
+                stopped.Checked = false;
             }
             else
             {
@@ -119,6 +151,16 @@ namespace AndroidNativeAppWithCSharp
                 {
                     message.Text = LARGEBREAK_COUNTDOWN_MSG;
                 });
+
+                if (tempTime == -1)
+                {
+                    countMinutes = (largeBreak * 10000) / 10000;
+                }
+
+                timer.Enabled = true;
+                Toast.MakeText(this, "timer for large break started", ToastLength.Short).Show();
+                running.Checked = true;
+                stopped.Checked = false;
             }
         }
 
@@ -147,12 +189,69 @@ namespace AndroidNativeAppWithCSharp
                     message.Text = (progressBar.Progress < 4) ? BEFORE_SMALLBREAK_COUNTDOWN_MSG : BEFORE_LARGEBREAK_COUNTDOWN_MSG;
                     progressMessage.Text = (progressBar.Progress < 4)
                     ? $"{progressBar.Progress} periods have passed - {4 - progressBar.Progress} remain" : PROGRESS_ALL_MSG;
-                    countdownForWhat = (progressBar.Progress < 4) ? "smallBreak" : "largeBreak";
+
+                    if (countdownForWhat.Equals("production"))
+                    {
+                        countdownForWhat = (progressBar.Progress < 4) ? "smallBreak" : "largeBreak";
+                    }
+                    else
+                        countdownForWhat = "production";
+
                 });
                 timer.Stop();
                 
             }
         }// end of timedEvent()
+
+
+        /// <summary>
+        /// Method called on stop button click.
+        /// If btn text is 'stop', stops the timer, sets the count minutes
+        /// and updates the ui appropriately.
+        /// If btn text is 'reset', resets tempTime and sets the countMinutes appropriately
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void StopCountdown(Object sender, EventArgs e)
+        {
+            if (stopBtn.Text.Equals(btnText.STOP.ToString()))
+            {
+                timer.Stop();
+
+                tempTime = Convert.ToInt32(pomodoroCntr.Text);
+
+                countMinutes = tempTime * 10000;
+
+                RunOnUiThread(() =>
+                {
+                    stopped.Checked = true;
+                    running.Checked = false;
+                    startBtn.Text = btnText.CONTINUE.ToString();
+                    stopBtn.Text = btnText.RESET.ToString();
+                });
+            }
+            else if (stopBtn.Text.Equals(btnText.RESET.ToString()))
+            {
+                tempTime = -1;
+
+                switch (countdownForWhat)
+                {
+                    case "production":
+                        countMinutes = 250000;
+                        message.Text = INITIAL_MSG;
+                        break;
+                    case "smallbreak":
+                        countMinutes = smallBreak * 10000;
+                        message.Text = BEFORE_SMALLBREAK_COUNTDOWN_MSG;
+                        break;
+                    case "largebreak":
+                        countMinutes = largeBreak * 10000;
+                        message.Text = BEFORE_LARGEBREAK_COUNTDOWN_MSG;
+                        break;
+                }
+            }
+
+        }// end of stopCountdown()
 
 
         /// <summary>
@@ -175,7 +274,7 @@ namespace AndroidNativeAppWithCSharp
                     five.SetTextColor(Android.Graphics.Color.Gray);
                 });
                 smallBreak = 3;
-                Toast.MakeText(this, $"Small Break Time is set for {smallBreak} minutes" , ToastLength.Long).Show();
+                Toast.MakeText(this, $"Small Break Time is set for {smallBreak} minutes" , ToastLength.Short).Show();
             }
             else if (sender.Equals(five))
             {
@@ -185,7 +284,7 @@ namespace AndroidNativeAppWithCSharp
                     three.SetTextColor(Android.Graphics.Color.Gray);
                 });
                 smallBreak = 5;
-                Toast.MakeText(this, $"Small Break Time is set for {smallBreak} minutes", ToastLength.Long).Show();
+                Toast.MakeText(this, $"Small Break Time is set for {smallBreak} minutes", ToastLength.Short).Show();
             }
             else if (sender.Equals(fifteen))
             {
@@ -195,7 +294,7 @@ namespace AndroidNativeAppWithCSharp
                     thirty.SetTextColor(Android.Graphics.Color.Gray);
                 });
                 largeBreak = 15;
-                Toast.MakeText(this, $"Large Break Time is set for {largeBreak} minutes", ToastLength.Long).Show();
+                Toast.MakeText(this, $"Large Break Time is set for {largeBreak} minutes", ToastLength.Short).Show();
             }
             else if (sender.Equals(thirty))
             {
@@ -205,10 +304,10 @@ namespace AndroidNativeAppWithCSharp
                     fifteen.SetTextColor(Android.Graphics.Color.Gray);
                 });
                 largeBreak = 30;
-                Toast.MakeText(this, $"Small Break Time is set for {largeBreak} minutes", ToastLength.Long).Show();
+                Toast.MakeText(this, $"Small Break Time is set for {largeBreak} minutes", ToastLength.Short).Show();
             }
 
         }// end of updateBreakTimePeriods
-    }
+    }// end of main ativity
 }
 
