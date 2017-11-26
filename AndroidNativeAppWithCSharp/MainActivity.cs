@@ -24,7 +24,7 @@ namespace AndroidNativeAppWithCSharp
 
 
         System.Timers.Timer timer;
-        int cntrVal = 250000;
+        int cntrVal = 20000;
         const int cntrTick = 60000;
         int countMinutes;
         int tempTime = -1;
@@ -49,6 +49,7 @@ namespace AndroidNativeAppWithCSharp
         private const string BEFORE_LARGEBREAK_COUNTDOWN_MSG = "Press start to begin large break countdown";
         private const string PROGRESS_DEFAULT_MSG = "No productive periods passed yet";
         private const string PROGRESS_ALL_MSG = "Finally it is time for the large break!";
+        private const string STOP_MESSAGE = "Coutdown has stopped - press continue to resume";
 
         protected override void OnCreate(Bundle bundle)
         {
@@ -72,6 +73,7 @@ namespace AndroidNativeAppWithCSharp
             this.FindViewById<Button>(Resource.Id.stopBtn).Click += this.StopCountdown;
 
             pomodoroCntr = FindViewById<TextView> (Resource.Id.pomodoroLbl);
+            pomodoroCntr.Text = (cntrVal / 10000).ToString();
 
             stopped = FindViewById<CheckBox> (Resource.Id.offCheckbox);
             stopped.Checked = true;
@@ -104,6 +106,7 @@ namespace AndroidNativeAppWithCSharp
             RunOnUiThread(() =>
             {
                 stopBtn.Text = btnText.STOP.ToString();
+                startBtn.Enabled = false;
             });
 
             tempTime = -1;
@@ -185,6 +188,9 @@ namespace AndroidNativeAppWithCSharp
                 {
                     stopped.Checked = true;
                     running.Checked = false;
+                    startBtn.Enabled = true;
+                    stopBtn.Enabled = false;
+                    startBtn.Text = btnText.START.ToString();
                     progressBar.Progress += 1;
                     message.Text = (progressBar.Progress < 4) ? BEFORE_SMALLBREAK_COUNTDOWN_MSG : BEFORE_LARGEBREAK_COUNTDOWN_MSG;
                     progressMessage.Text = (progressBar.Progress < 4)
@@ -226,8 +232,10 @@ namespace AndroidNativeAppWithCSharp
                 {
                     stopped.Checked = true;
                     running.Checked = false;
+                    startBtn.Enabled = true;
                     startBtn.Text = btnText.CONTINUE.ToString();
                     stopBtn.Text = btnText.RESET.ToString();
+                    message.Text = STOP_MESSAGE;
                 });
             }
             else if (stopBtn.Text.Equals(btnText.RESET.ToString()))
