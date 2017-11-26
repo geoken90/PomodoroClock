@@ -2,6 +2,7 @@
 using Android.Widget;
 using Android.OS;
 using System;
+using Android.Media;
 
 namespace AndroidNativeAppWithCSharp
 {
@@ -21,6 +22,7 @@ namespace AndroidNativeAppWithCSharp
         TextView thirty;
         CheckBox stopped, running;
         ProgressBar progressBar;
+        MediaPlayer mediaPlayer;
 
 
         System.Timers.Timer timer;
@@ -99,15 +101,20 @@ namespace AndroidNativeAppWithCSharp
 
             thirty = FindViewById<TextView>(Resource.Id.thirtyMinLbl);
             this.FindViewById<TextView>(Resource.Id.thirtyMinLbl).Click += this.UpdateBreakTimePeriods;
+
+            mediaPlayer = MediaPlayer.Create(this, Resource.Raw.beep);
         }
 
         private void CountdownTime(object sender, EventArgs e)
         {
+
             RunOnUiThread(() =>
             {
                 stopBtn.Text = btnText.STOP.ToString();
                 startBtn.Enabled = false;
             });
+
+            mediaPlayer.Start();
 
             tempTime = -1;
             timer = new System.Timers.Timer();
@@ -332,6 +339,7 @@ namespace AndroidNativeAppWithCSharp
             }
 
         }// end of updateBreakTimePeriods
+
     }// end of main ativity
 }
 
