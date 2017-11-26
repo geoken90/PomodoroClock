@@ -124,6 +124,11 @@ namespace AndroidNativeAppWithCSharp
                 if (tempTime == -1)
                 {
                     countMinutes = cntrVal / 10000;
+
+                    RunOnUiThread(() =>
+                    {
+                        pomodoroCntr.Text = countMinutes.ToString();
+                    });
                 }
                 
                 timer.Enabled = true;
@@ -141,6 +146,11 @@ namespace AndroidNativeAppWithCSharp
                 if (tempTime == -1)
                 {
                     countMinutes = (smallBreak * 10000) / 10000;
+
+                    RunOnUiThread(() =>
+                    {
+                        pomodoroCntr.Text = countMinutes.ToString();
+                    });
                 }
 
                 timer.Enabled = true;
@@ -158,6 +168,11 @@ namespace AndroidNativeAppWithCSharp
                 if (tempTime == -1)
                 {
                     countMinutes = (largeBreak * 10000) / 10000;
+
+                    RunOnUiThread(() =>
+                    {
+                        pomodoroCntr.Text = countMinutes.ToString();
+                    });
                 }
 
                 timer.Enabled = true;
@@ -184,12 +199,13 @@ namespace AndroidNativeAppWithCSharp
 
             if (countMinutes == 0)
             {
+
                 RunOnUiThread(() =>
                 {
                     stopped.Checked = true;
                     running.Checked = false;
                     startBtn.Enabled = true;
-                    stopBtn.Enabled = false;
+                    stopBtn.Enabled = true;
                     startBtn.Text = btnText.START.ToString();
                     progressBar.Progress += 1;
                     message.Text = (progressBar.Progress < 4) ? BEFORE_SMALLBREAK_COUNTDOWN_MSG : BEFORE_LARGEBREAK_COUNTDOWN_MSG;
@@ -248,11 +264,11 @@ namespace AndroidNativeAppWithCSharp
                         countMinutes = 250000;
                         message.Text = INITIAL_MSG;
                         break;
-                    case "smallbreak":
+                    case "smallBreak":
                         countMinutes = smallBreak * 10000;
                         message.Text = BEFORE_SMALLBREAK_COUNTDOWN_MSG;
                         break;
-                    case "largebreak":
+                    case "largeBreak":
                         countMinutes = largeBreak * 10000;
                         message.Text = BEFORE_LARGEBREAK_COUNTDOWN_MSG;
                         break;
