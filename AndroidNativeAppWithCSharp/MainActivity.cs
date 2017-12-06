@@ -3,6 +3,7 @@ using Android.Widget;
 using Android.OS;
 using System;
 using Android.Media;
+using Android.Content.Res;
 
 namespace AndroidNativeAppWithCSharp
 {
@@ -43,6 +44,9 @@ namespace AndroidNativeAppWithCSharp
             RESET = 4
         };
 
+        private const string startSound = "beep.mp3";
+
+
         private const string INITIAL_MSG = "Press start to begin countdown";
         private const string PRODUCTION_COUNTDOWN_MSG = "Counting down production time";
         private const string SMALLBREAK_COUNTDOWN_MSG = "Counting down small break time";
@@ -51,7 +55,7 @@ namespace AndroidNativeAppWithCSharp
         private const string BEFORE_LARGEBREAK_COUNTDOWN_MSG = "Press start to begin large break countdown";
         private const string PROGRESS_DEFAULT_MSG = "No productive periods passed yet";
         private const string PROGRESS_ALL_MSG = "Finally it is time for the large break!";
-        private const string STOP_MESSAGE = "Coutdown has stopped - press continue to resume";
+        private const string STOP_MESSAGE = "Coutdown has stopped";
 
         protected override void OnCreate(Bundle bundle)
         {
@@ -102,11 +106,12 @@ namespace AndroidNativeAppWithCSharp
             thirty = FindViewById<TextView>(Resource.Id.thirtyMinLbl);
             this.FindViewById<TextView>(Resource.Id.thirtyMinLbl).Click += this.UpdateBreakTimePeriods;
 
-            mediaPlayer = MediaPlayer.Create(this, Resource.Raw.beep);
+            //mediaPlayer = MediaPlayer.Create(this, Resource.Raw.beep);
         }
 
         private void CountdownTime(object sender, EventArgs e)
         {
+            playAudioFile(startSound);
 
             RunOnUiThread(() =>
             {
@@ -264,6 +269,11 @@ namespace AndroidNativeAppWithCSharp
             else if (stopBtn.Text.Equals(btnText.RESET.ToString()))
             {
                 tempTime = -1;
+                RunOnUiThread(() =>
+                {
+                    startBtn.Text = btnText.START.ToString();
+                    stopBtn.Text = btnText.STOP.ToString();
+                });
 
                 switch (countdownForWhat)
                 {
@@ -339,6 +349,19 @@ namespace AndroidNativeAppWithCSharp
             }
 
         }// end of updateBreakTimePeriods
+
+
+        /// <summary>
+        /// Plays audio files thar are located in assets folder
+        /// </summary>
+        /// <param name="file">the filename e.g "name.mp3"</param>
+        private void playAudioFile(string file)
+        {
+            AssetFileDescriptor descriptor = Assets.OpenFd(file);
+            mediaPlayer.SetDataSource(descriptor.FileDescriptor);
+            mediaPlayer.Prepare();
+            mediaPlayer.Start();
+        }
 
     }// end of main ativity
 }
