@@ -107,20 +107,18 @@ namespace AndroidNativeAppWithCSharp
             thirty = FindViewById<TextView>(Resource.Id.thirtyMinLbl);
             this.FindViewById<TextView>(Resource.Id.thirtyMinLbl).Click += this.UpdateBreakTimePeriods;
 
-            //mediaPlayer = MediaPlayer.Create(this, Resource.Raw.beep);
+            mediaPlayer = new MediaPlayer();
         }
 
         private void CountdownTime(object sender, EventArgs e)
         {
-            playAudioFile(startSound);
 
             RunOnUiThread(() =>
             {
                 stopBtn.Text = btnText.STOP.ToString();
                 startBtn.Enabled = false;
+                playAudioFile(endSound);
             });
-
-            mediaPlayer.Start();
 
             tempTime = -1;
             timer = new System.Timers.Timer();
@@ -208,19 +206,18 @@ namespace AndroidNativeAppWithCSharp
             RunOnUiThread(() =>
             {
                 pomodoroCntr.Text = countMinutes.ToString();
+                playAudioFile(startSound);
             });
 
             if (countMinutes == 0)
             {
-
-                playAudioFile(endSound);
 
                 RunOnUiThread(() =>
                 {
                     stopped.Checked = true;
                     running.Checked = false;
                     startBtn.Enabled = true;
-                    stopBtn.Enabled = true;
+                    stopBtn.Enabled = false;
                     startBtn.Text = btnText.START.ToString();
                     progressBar.Progress += 1;
                     message.Text = (progressBar.Progress < 4) ? BEFORE_SMALLBREAK_COUNTDOWN_MSG : BEFORE_LARGEBREAK_COUNTDOWN_MSG;
@@ -235,6 +232,8 @@ namespace AndroidNativeAppWithCSharp
                         countdownForWhat = "production";
 
                 });
+
+
                 timer.Stop();
                 
             }
@@ -361,7 +360,17 @@ namespace AndroidNativeAppWithCSharp
         private void playAudioFile(string file)
         {
             AssetFileDescriptor descriptor = Assets.OpenFd(file);
-            mediaPlayer.SetDataSource(descriptor.FileDescriptor);
+            if (mediaPlayer.IsPlaying == true)
+            {
+                mediaPlayer.Stop();
+                mediaPlayer.Reset();
+            }
+            else
+            {
+                mediaPlayer.Reset();
+            }
+
+            mediaPlayer.SetDataSource(descriptor.FileDescriptor, descriptor.StartOffset, descriptor.Length);
             mediaPlayer.Prepare();
             mediaPlayer.Start();
         }
