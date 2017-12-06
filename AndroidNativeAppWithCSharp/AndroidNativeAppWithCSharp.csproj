@@ -76,7 +76,9 @@
   <ItemGroup>
     <None Include="Properties\AndroidManifest.xml" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <AndroidAsset Include="Assets\arpeggio.mp3" />
+  </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Assets\beep.mp3" />
   </ItemGroup>

@@ -45,6 +45,7 @@ namespace AndroidNativeAppWithCSharp
         };
 
         private const string startSound = "beep.mp3";
+        private const string endSound = "arpeggio.mp3";
 
 
         private const string INITIAL_MSG = "Press start to begin countdown";
@@ -211,6 +212,8 @@ namespace AndroidNativeAppWithCSharp
 
             if (countMinutes == 0)
             {
+
+                playAudioFile(endSound);
 
                 RunOnUiThread(() =>
                 {
