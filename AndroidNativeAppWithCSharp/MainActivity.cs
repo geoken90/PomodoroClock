@@ -45,7 +45,8 @@ namespace AndroidNativeAppWithCSharp
         };
 
         private const string startSound = "beep.mp3";
-        private const string endSound = "arpeggio.mp3";
+        private const string beginCountdownSound = "arpeggio.mp3";
+        private const string endOfCountdownSound = "what-friends-are-for.mp3";
 
 
         private const string INITIAL_MSG = "Press start to begin countdown";
@@ -116,8 +117,9 @@ namespace AndroidNativeAppWithCSharp
             RunOnUiThread(() =>
             {
                 stopBtn.Text = btnText.STOP.ToString();
+                stopBtn.Enabled = true;
                 startBtn.Enabled = false;
-                playAudioFile(endSound);
+                playAudioFile(beginCountdownSound);
             });
 
             tempTime = -1;
@@ -230,6 +232,8 @@ namespace AndroidNativeAppWithCSharp
                     }
                     else
                         countdownForWhat = "production";
+
+                    playAudioFile(endOfCountdownSound);
 
                 });
 
@@ -347,7 +351,7 @@ namespace AndroidNativeAppWithCSharp
                     fifteen.SetTextColor(Android.Graphics.Color.Gray);
                 });
                 largeBreak = 30;
-                Toast.MakeText(this, $"Small Break Time is set for {largeBreak} minutes", ToastLength.Short).Show();
+                Toast.MakeText(this, $"Large Break Time is set for {largeBreak} minutes", ToastLength.Short).Show();
             }
 
         }// end of updateBreakTimePeriods
