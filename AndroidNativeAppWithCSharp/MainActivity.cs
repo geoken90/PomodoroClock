@@ -221,10 +221,12 @@ namespace AndroidNativeAppWithCSharp
                     startBtn.Enabled = true;
                     stopBtn.Enabled = false;
                     startBtn.Text = btnText.START.ToString();
-                    progressBar.Progress += 1;
+
+                    progressBar.Progress = (progressBar.Progress < 4) ? progressBar.Progress + 1 : 0;
+
                     message.Text = (progressBar.Progress < 4) ? BEFORE_SMALLBREAK_COUNTDOWN_MSG : BEFORE_LARGEBREAK_COUNTDOWN_MSG;
-                    progressMessage.Text = (progressBar.Progress < 4)
-                    ? $"{progressBar.Progress} periods have passed - {4 - progressBar.Progress} remain" : PROGRESS_ALL_MSG;
+
+                    progressMessage.Text = (progressBar.Progress < 4) ? $"{progressBar.Progress} periods have passed - {4 - progressBar.Progress} remain" : PROGRESS_ALL_MSG;
 
                     if (countdownForWhat.Equals("production"))
                     {
