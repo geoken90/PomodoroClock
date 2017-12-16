@@ -27,9 +27,9 @@ namespace AndroidNativeAppWithCSharp
 
 
         System.Timers.Timer timer;
-        int cntrVal = 20000;
+        int firstTimeRunning = 0;
         const int cntrTick = 60000;
-        int countMinutes;
+        int countMinutes = 20000;
         int tempTime = -1;
 
         short smallBreak = 3;
@@ -81,7 +81,7 @@ namespace AndroidNativeAppWithCSharp
             this.FindViewById<Button>(Resource.Id.stopBtn).Click += this.StopCountdown;
 
             pomodoroCntr = FindViewById<TextView> (Resource.Id.pomodoroLbl);
-            pomodoroCntr.Text = (cntrVal / 10000).ToString();
+            pomodoroCntr.Text = (countMinutes / 10000).ToString();
 
             stopped = FindViewById<CheckBox> (Resource.Id.offCheckbox);
             stopped.Checked = true;
@@ -122,7 +122,7 @@ namespace AndroidNativeAppWithCSharp
                 playAudioFile(beginCountdownSound);
             });
 
-            tempTime = -1;
+            //tempTime = -1;
             timer = new System.Timers.Timer();
             timer.Interval = cntrTick;
             timer.Elapsed += onTimedEvent;
@@ -136,7 +136,16 @@ namespace AndroidNativeAppWithCSharp
 
                 if (tempTime == -1)
                 {
-                    countMinutes = cntrVal / 10000;
+                    countMinutes = countMinutes / 10000;
+
+                    RunOnUiThread(() =>
+                    {
+                        pomodoroCntr.Text = countMinutes.ToString();
+                    });
+                }
+                else
+                {
+                    countMinutes = (tempTime * 10000) / 10000;
 
                     RunOnUiThread(() =>
                     {
@@ -159,12 +168,14 @@ namespace AndroidNativeAppWithCSharp
                 if (tempTime == -1)
                 {
                     countMinutes = (smallBreak * 10000) / 10000;
-
-                    RunOnUiThread(() =>
-                    {
-                        pomodoroCntr.Text = countMinutes.ToString();
-                    });
                 }
+                else
+                    countMinutes = (tempTime * 10000) / 10000;
+
+                RunOnUiThread(() =>
+                {
+                   pomodoroCntr.Text = countMinutes.ToString();
+                });
 
                 timer.Enabled = true;
                 Toast.MakeText(this, "timer for small break started", ToastLength.Short).Show();
@@ -181,12 +192,14 @@ namespace AndroidNativeAppWithCSharp
                 if (tempTime == -1)
                 {
                     countMinutes = (largeBreak * 10000) / 10000;
-
-                    RunOnUiThread(() =>
-                    {
-                        pomodoroCntr.Text = countMinutes.ToString();
-                    });
                 }
+                else
+                    countMinutes = (tempTime * 10000) / 10000;
+
+                RunOnUiThread(() =>
+                {
+                    pomodoroCntr.Text = countMinutes.ToString();
+                });
 
                 timer.Enabled = true;
                 Toast.MakeText(this, "timer for large break started", ToastLength.Short).Show();
@@ -213,6 +226,7 @@ namespace AndroidNativeAppWithCSharp
 
             if (countMinutes == 0)
             {
+                tempTime = -1;
 
                 RunOnUiThread(() =>
                 {
@@ -222,7 +236,7 @@ namespace AndroidNativeAppWithCSharp
                     stopBtn.Enabled = false;
                     startBtn.Text = btnText.START.ToString();
 
-                    progressBar.Progress = (progressBar.Progress < 4) ? progressBar.Progress + 1 : 0;
+                    progressBar.Progress += 1;
 
                     message.Text = (progressBar.Progress < 4) ? BEFORE_SMALLBREAK_COUNTDOWN_MSG : BEFORE_LARGEBREAK_COUNTDOWN_MSG;
 
@@ -231,9 +245,20 @@ namespace AndroidNativeAppWithCSharp
                     if (countdownForWhat.Equals("production"))
                     {
                         countdownForWhat = (progressBar.Progress < 4) ? "smallBreak" : "largeBreak";
+
+                        if (countdownForWhat.Equals("largeBreak"))
+                        {
+                            RunOnUiThread(() =>
+                            {
+                                progressBar.Progress = 0;
+                            });
+                        }
                     }
                     else
+                    {
                         countdownForWhat = "production";
+                        countMinutes = 20000;
+                    }
 
                     playAudioFile(endOfCountdownSound);
 
@@ -262,7 +287,7 @@ namespace AndroidNativeAppWithCSharp
 
                 tempTime = Convert.ToInt32(pomodoroCntr.Text);
 
-                countMinutes = tempTime * 10000;
+                firstTimeRunning++;
 
                 RunOnUiThread(() =>
                 {
@@ -286,7 +311,7 @@ namespace AndroidNativeAppWithCSharp
                 switch (countdownForWhat)
                 {
                     case "production":
-                        countMinutes = 250000;
+                        countMinutes = 20000;
                         message.Text = INITIAL_MSG;
                         break;
                     case "smallBreak":
